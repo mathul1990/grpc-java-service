@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // grpc
+    runtimeOnly 'io.grpc:grpc-netty-shaded:1.69.0' // shaded is for ssl security. with this ssl libraries are added.
+    implementation 'io.grpc:grpc-protobuf:1.69.0'
+    implementation 'io.grpc:grpc-stub:1.69.0'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
+    implementation group: 'org.mongodb', name: 'mongo-java-driver', version: '3.12.14'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.5"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.69.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
